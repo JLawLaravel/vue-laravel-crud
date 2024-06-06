@@ -1,6 +1,7 @@
 import "./bootstrap";
 
 import { createApp } from "vue";
-import PostsIndex from "./components/Posts/Index.vue";
+import App from "./layouts/App.vue";
+import router from "./routes/index";
 
-createApp({}).component("PostsIndex", PostsIndex).mount("#app");
+createApp(App).use(router).mount("#app");
