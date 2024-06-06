@@ -20,6 +20,7 @@ class PostIndexResource extends JsonResource
             'title' => $this->title,
             'content' => str($this->content)->limit(50),
             // 'content' => $this->content,
+            'category_id' => $this->category_id,
             'category' => $this->category->name,
             'created_at' => $this->created_at->toDateString()
         ];

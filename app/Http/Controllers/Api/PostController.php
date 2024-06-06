@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\PostIndexResource;
 use App\Http\Resources\PostShowResource;
 use App\Models\Post;
@@ -41,14 +42,14 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        try {
-            $posts = Post::create($request->all());
-    
-            return PostShowResource::make($posts);
-            //code...
-        } catch (\Throwable $th) {
-            throw $th;
-        }
+        if ($request->hasFile('thumbnail')) { 
+            $filename = $request->file('thumbnail')->getClientOriginalName();
+            info($filename);
+        } 
+
+        $post = Post::create($request->all());
+
+        return PostShowResource::make($post);
     }
 
     /**
@@ -62,9 +63,11 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Post $post, StorePostRequest $request)
     {
-        //
+        $post->update($request->all());
+
+        return new PostShowResource($post);
     }
 
     /**
