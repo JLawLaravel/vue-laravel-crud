@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\PostIndexResource;
 use App\Http\Resources\PostShowResource;
 use App\Models\Post;
@@ -26,9 +27,26 @@ class PostController extends Controller
             $orderDirection = 'desc';
         } 
 
+        // Search for every column
         $posts = Post::with('category')
-            ->when(request('category'), function (Builder $query) { 
-                $query->where('category_id', request('category'));
+            ->when(request('search_category'), function (Builder $query) { 
+                $query->where('category_id', request('search_category'));
+            })
+            ->when(request('search_id'), function (Builder $query) {
+                $query->where('id', request('search_id'));
+            })
+            ->when(request('search_title'), function (Builder $query) {
+                $query->where('title', 'like', '%' . request('search_title') . '%');
+            })
+            ->when(request('search_content'), function (Builder $query) {
+                $query->where('content', 'like', '%' . request('search_content') . '%');
+            }) 
+            ->when(request('search_global'), function (Builder $query) { 
+                $query->whereAny([
+                        'id',
+                        'title',
+                        'content',
+                    ], 'LIKE', '%' . request('search_global') . '%');
             }) 
             ->orderBy($orderColumn, $orderDirection)
             ->paginate(5);
@@ -41,14 +59,14 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        try {
-            $posts = Post::create($request->all());
-    
-            return PostShowResource::make($posts);
-            //code...
-        } catch (\Throwable $th) {
-            throw $th;
-        }
+        if ($request->hasFile('thumbnail')) { 
+            $filename = $request->file('thumbnail')->getClientOriginalName();
+            info($filename);
+        } 
+
+        $post = Post::create($request->all());
+
+        return PostShowResource::make($post);
     }
 
     /**
@@ -62,16 +80,20 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Post $post, StorePostRequest $request)
     {
-        //
+        $post->update($request->all());
+
+        return new PostShowResource($post);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Post $post)
     {
-        //
+        $post->delete();
+
+        return response()->noContent();
     }
 }

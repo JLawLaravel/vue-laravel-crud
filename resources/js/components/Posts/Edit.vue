@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="storePost(post)">
+    <form @submit.prevent="updatePost(post)">
         <!-- Title -->
         <div>
             <label
@@ -105,21 +105,16 @@
 
 <script setup>
 import { onMounted, reactive } from "vue";
+import { useRoute } from "vue-router";
 import useCategories from "@/composables/categories";
 import usePosts from "@/composables/posts";
 
-const post = reactive({
-    title: "",
-    content: "",
-    category_id: "",
-    thumbnail: "",
-});
-
 const { categories, getCategories } = useCategories();
-
-const { storePost, validationErrors, isLoading } = usePosts();
+const { post, getPost, updatePost, validationErrors, isLoading } = usePosts();
+const route = useRoute();
 
 onMounted(() => {
+    getPost(route.params.id);
     getCategories();
 });
 </script>
