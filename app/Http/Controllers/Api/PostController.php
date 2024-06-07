@@ -27,9 +27,26 @@ class PostController extends Controller
             $orderDirection = 'desc';
         } 
 
+        // Search for every column
         $posts = Post::with('category')
-            ->when(request('category'), function (Builder $query) { 
-                $query->where('category_id', request('category'));
+            ->when(request('search_category'), function (Builder $query) { 
+                $query->where('category_id', request('search_category'));
+            })
+            ->when(request('search_id'), function (Builder $query) {
+                $query->where('id', request('search_id'));
+            })
+            ->when(request('search_title'), function (Builder $query) {
+                $query->where('title', 'like', '%' . request('search_title') . '%');
+            })
+            ->when(request('search_content'), function (Builder $query) {
+                $query->where('content', 'like', '%' . request('search_content') . '%');
+            }) 
+            ->when(request('search_global'), function (Builder $query) { 
+                $query->whereAny([
+                        'id',
+                        'title',
+                        'content',
+                    ], 'LIKE', '%' . request('search_global') . '%');
             }) 
             ->orderBy($orderColumn, $orderDirection)
             ->paginate(5);
@@ -73,8 +90,10 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Post $post)
     {
-        //
+        $post->delete();
+
+        return response()->noContent();
     }
 }
