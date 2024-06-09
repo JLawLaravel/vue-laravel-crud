@@ -39,7 +39,5 @@ class AppServiceProvider extends ServiceProvider
         } catch (QueryException $e) {
  
         }
-
-        Passport::loadKeysFrom(__DIR__.'/../secrets/oauth');
     }
 }

@@ -11,6 +11,15 @@ use App\Models\Post;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Knuckles\Scribe\Attributes\Group;
+
+/**
+ * @group Posts
+ *
+ * Managing Posts
+ */
+
+ #[Group('Posts', 'Managing Posts')]
 
 class PostController extends Controller
 {

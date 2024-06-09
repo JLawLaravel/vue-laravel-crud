@@ -7,12 +7,33 @@ use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Resources\CategoryIndexResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Knuckles\Scribe\Attributes\BodyParam;
+use Knuckles\Scribe\Attributes\Endpoint;
+use Knuckles\Scribe\Attributes\Group;
+use Knuckles\Scribe\Attributes\QueryParam;
+
+/**
+ * @group Categories
+ *
+ * Managing Categories
+ */
+
+ #[Group('Categories', 'Managing Categories')]
 
 class CategoryController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Get Categories
+     *
+     * Getting the list of the categories
+     * 
+     * @queryParam page Which page to show. Example: 12
      */
+    #[Endpoint('Get Categories', <<<DESC
+        Getting the list of the categories
+    DESC)]
+    #[QueryParam('page', 'int', 'Which page to show.', example: 12)]
+
     public function index()
     {
         $category = Category::all();
@@ -23,6 +44,15 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
+     /**
+     * POST categories
+     *
+     * @bodyParam name string required Name of the category. Example: "Clothing
+     */
+
+    #[BodyParam('name', 'string', 'Name of the category.', true, 'Clothing')]
+    
     public function store(StoreCategoryRequest $request)
     {
         //
