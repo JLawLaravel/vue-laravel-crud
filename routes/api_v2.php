@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\Api\V1\CategoryController;
-use App\Http\Controllers\Api\V1\PostController;
+use App\Http\Controllers\Api\V2\CategoryController;
+use App\Http\Controllers\Api\V2\PostController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
