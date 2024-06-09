@@ -34,6 +34,26 @@ class CategoryController extends Controller
     DESC)]
     #[QueryParam('page', 'int', 'Which page to show.', example: 12)]
 
+    /**
+     * @OA\Get(
+     *     path="/categories",
+     *     tags={"Categories"},
+     *     summary="Get list of categories",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *     ),
+     *     @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *     ),
+     *     @OA\Response(
+     *          response=403,
+     *          description="Forbidden",
+     *     )
+     * )
+     */
+
     public function index()
     {
         $category = Category::all();
